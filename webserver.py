@@ -195,13 +195,15 @@ async def upscale_image_file(file: UploadFile = File(...)):
 
     try:
         # Validate file type
-        if not file.content_type.startswith('image/'):
+        content_type = file.content_type
+        if not content_type.startswith('image/'):
             raise HTTPException(status_code=400, detail="File must be an image")
 
         # Read image file
         contents = await file.read()
         nparr = np.frombuffer(contents, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)
+        res_header = f'data:{content_type};base64,'
 
         if img is None:
             raise HTTPException(status_code=400, detail="Invalid image file")
@@ -224,7 +226,7 @@ async def upscale_image_file(file: UploadFile = File(...)):
         return UpscaleResponse(
             success=True,
             message="Image upscaled successfully",
-            upscaled_image=upscaled_base64
+            upscaled_image=f"{res_header}{upscaled_base64}"
         )
 
     except HTTPException:
