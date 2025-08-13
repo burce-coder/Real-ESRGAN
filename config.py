@@ -40,14 +40,6 @@ class Config:
     # Available models
     AVAILABLE_MODELS = os.getenv('AVAILABLE_MODELS', 'RealESRGAN_x4plus,RealESRNet_x4plus,RealESRGAN_x4plus_anime_6B,RealESRGAN_x2plus,realesr-animevideov3,realesr-general-x4v3').split(',')
 
-    # Error handling
-    ENABLE_CUDA_ERROR_HANDLING = os.getenv('ENABLE_CUDA_ERROR_HANDLING', 'true').lower() == 'true'
-    ENABLE_DETAILED_ERRORS = os.getenv('ENABLE_DETAILED_ERRORS', 'false').lower() == 'true'
-
-    # Logging
-    LOG_LEVEL = os.getenv('LOG_LEVEL', 'INFO')
-    ENABLE_MODEL_INIT_LOG = os.getenv('ENABLE_MODEL_INIT_LOG', 'true').lower() == 'true'
-
     @classmethod
     def get_gpu_id(cls):
         """Get GPU ID as integer or None."""
@@ -70,9 +62,6 @@ class Config:
             'server_port': cls.SERVER_PORT,
             'weights_dir': cls.WEIGHTS_DIR,
             'available_models': cls.AVAILABLE_MODELS,
-            'cuda_error_handling': cls.ENABLE_CUDA_ERROR_HANDLING,
-            'detailed_errors': cls.ENABLE_DETAILED_ERRORS,
-            'model_init_log': cls.ENABLE_MODEL_INIT_LOG
         }
 
 
