@@ -15,6 +15,7 @@ RUN pip install --upgrade -r requirements.txt
 # RUN wget https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth -P /app/gfpgan/weights
 # RUN wget https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth -P /app/gfpgan/weights
 # RUN modelscope download --model iic/cv_ddcolor_image-colorization --local_dir /app/models/iic/cv_ddcolor_image-colorization
+RUN python setup.py develop
 
 EXPOSE 8000
 
