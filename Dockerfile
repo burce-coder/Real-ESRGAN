@@ -1,11 +1,11 @@
 FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -y update && apt-get install -y --no-install-recommends libgl1-mesa-glx && apt-get clean && rm -rf /var/lib/apt/lists/*
-RUN python -m venv /app/venv
+# RUN python -m venv /app/venv
 # FORCE_CUDA 是编译安装 pytorch3d 所需要的环境变量
-ENV VIRTUAL_ENV=/app/venv \
-    PATH="/app/venv/bin:$PATH" \
-    FORCE_CUDA=1
+# ENV VIRTUAL_ENV=/app/venv \
+#     PATH="/app/venv/bin:$PATH" \
+#     FORCE_CUDA=1
 
 WORKDIR /app
 COPY . /app/
