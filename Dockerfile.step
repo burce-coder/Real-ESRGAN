@@ -5,7 +5,14 @@
 #    wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P gfpgan/weights
 #    wget https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth -P gfpgan/weights
 #    wget https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth -P gfpgan/weights
-# 6. python setup.py develop
+# 6. python setup.py develop 或者生成 realesrgan/version.py
+
+# GENERATED VERSION FILE
+# TIME: Thu Jul 31 12:25:06 2025
+__version__ = '0.3.0'
+__gitsha__ = 'a4abfb2'
+version_info = (0, 3, 0)
+
 # 7. sudo apt-get update
 # 8. sudo apt-get install -y libgl1-mesa-glx
 # 9. modelscope download --model iic/cv_ddcolor_image-colorization --local_dir ./models/iic/cv_ddcolor_image-colorization
