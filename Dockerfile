@@ -10,11 +10,11 @@ ENV VIRTUAL_ENV=/app/venv \
 WORKDIR /app
 COPY . /app/
 RUN pip install --upgrade -r requirements.txt
-RUN wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P /app/weights
-RUN wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P /app/gfpgan/weights
-RUN wget https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth -P /app/gfpgan/weights
-RUN wget https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth -P /app/gfpgan/weights
-RUN modelscope download --model iic/cv_ddcolor_image-colorization --local_dir /app/models/iic/cv_ddcolor_image-colorization
+# RUN wget https://github.com/xinntao/Real-ESRGAN/releases/download/v0.1.0/RealESRGAN_x4plus.pth -P /app/weights
+# RUN wget https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth -P /app/gfpgan/weights
+# RUN wget https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_Resnet50_Final.pth -P /app/gfpgan/weights
+# RUN wget https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth -P /app/gfpgan/weights
+# RUN modelscope download --model iic/cv_ddcolor_image-colorization --local_dir /app/models/iic/cv_ddcolor_image-colorization
 
 EXPOSE 8000
 
