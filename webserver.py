@@ -120,7 +120,9 @@ def initialize_model(model_name: str = None, **kwargs):
     else:
         face_enhancer = None
 
-    img_colorization = pipeline(Tasks.image_colorization, model='./models/iic/cv_ddcolor_image-colorization')
+    absolute_path = os.path.abspath(os.path.dirname(__file__))
+    color_model_path = os.path.join(absolute_path, 'models/iic/cv_ddcolor_image-colorization')
+    img_colorization = pipeline(Tasks.image_colorization, model=color_model_path)
 
 def image_to_base64(image: np.ndarray) -> str:
     """Convert OpenCV image to base64 string"""
