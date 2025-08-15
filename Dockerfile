@@ -19,6 +19,6 @@ RUN wget https://github.com/xinntao/facexlib/releases/download/v0.1.0/detection_
 RUN wget https://github.com/xinntao/facexlib/releases/download/v0.2.2/parsing_parsenet.pth -P /app/gfpgan/weights
 RUN modelscope download --model iic/cv_ddcolor_image-colorization --local_dir /app/models/iic/cv_ddcolor_image-colorization
 
-EXPOSE 8080
+EXPOSE 8000
 
 CMD ["python", "-u", "webserver.py"]

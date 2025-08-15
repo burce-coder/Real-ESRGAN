@@ -1,0 +1,10 @@
+services:
+  imagetoolkit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bruceyan1/imagetoolkit
+    command: python -u webserver.py
+    env_file: .env
+    ports:
+      - '8000:8000'
