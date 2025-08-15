@@ -20,7 +20,8 @@ ENABLE_DOCS=false
 
 # Model paths
 WEIGHTS_DIR=weights
-GFPGAN_MODEL_URL=https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
+# GFPGAN_MODEL_URL=https://github.com/TencentARC/GFPGAN/releases/download/v1.3.0/GFPGANv1.3.pth
+GFPGAN_MODEL_URL=./gfpgan/weights/GFPGANv1.3.pth
 
 # Available models (comma separated)
 AVAILABLE_MODELS=RealESRGAN_x4plus,RealESRNet_x4plus,RealESRGAN_x4plus_anime_6B,RealESRGAN_x2plus,realesr-animevideov3,realesr-general-x4v3
