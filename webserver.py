@@ -250,7 +250,7 @@ class ColorizeResponse(BaseModel):
     message: str
     colorized_image: Optional[str] = None
 
-@app.post("/colorize", response_model=dict)
+@app.post("/colorize", response_model=ColorizeResponse)
 async def colorize_image(file: UploadFile = File(...)):
     """
     Endpoint to upload a grayscale image and receive the colorized image as Base64.
