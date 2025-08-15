@@ -25,13 +25,18 @@ from basicsr.utils.download_util import load_file_from_url
 from realesrgan import RealESRGANer
 from realesrgan.archs.srvgg_arch import SRVGGNetCompact
 
+from modelscope.pipelines import pipeline
+from modelscope.utils.constant import Tasks
+from modelscope.outputs import OutputKeys
+
 # Global upsampler instance
 upsampler = None
 face_enhancer = None
+img_colorization = None
 
 def initialize_model(model_name: str = None, **kwargs):
     """Initialize the Real-ESRGAN model"""
-    global upsampler, face_enhancer
+    global upsampler, face_enhancer, img_colorization
 
     if model_name is None:
         model_name = config.DEFAULT_MODEL_NAME
@@ -114,6 +119,8 @@ def initialize_model(model_name: str = None, **kwargs):
             face_enhancer = None
     else:
         face_enhancer = None
+
+    img_colorization = pipeline(Tasks.image_colorization, model='./models/iic/cv_ddcolor_image-colorization')
 
 def image_to_base64(image: np.ndarray) -> str:
     """Convert OpenCV image to base64 string"""
@@ -203,7 +210,8 @@ async def upscale_image_file(file: UploadFile = File(...)):
         contents = await file.read()
         nparr = np.frombuffer(contents, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)
-        res_header = f'data:{content_type};base64,'
+        # res_header = f'data:{content_type};base64,'
+        res_header = f'data:image/png;base64,'
 
         if img is None:
             raise HTTPException(status_code=400, detail="Invalid image file")
@@ -225,7 +233,7 @@ async def upscale_image_file(file: UploadFile = File(...)):
 
         return UpscaleResponse(
             success=True,
-            message="Image upscaled successfully",
+            message="ok",
             upscaled_image=f"{res_header}{upscaled_base64}"
         )
 
@@ -234,17 +242,74 @@ async def upscale_image_file(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
-@app.get("/models")
-async def get_available_models():
-    """Get list of available models"""
-    return {
-        "models": config.AVAILABLE_MODELS
-    }
 
-@app.get("/config")
-async def get_config():
-    """Get current configuration summary"""
-    return config.get_config_summary()
+class ColorizeResponse(BaseModel):
+    success: bool
+    message: str
+    colorized_image: Optional[str] = None
+
+@app.post("/colorize", response_model=dict)
+async def colorize_image(file: UploadFile = File(...)):
+    """
+    Endpoint to upload a grayscale image and receive the colorized image as Base64.
+
+    Args:
+        file: Uploaded image file (expected to be an image, e.g., PNG, JPG)
+
+    Returns:
+        dict: Contains 'image_base64' key with the colorized image as a Base64 string
+    """
+
+    global img_colorization
+
+    try:
+        # Validate file type
+        content_type = file.content_type
+        if not file.content_type.startswith("image/"):
+            raise HTTPException(status_code=400, detail="Uploaded file must be an image")
+
+        # Read the uploaded image
+        contents = await file.read()
+        nparr = np.frombuffer(contents, np.uint8)
+        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        # res_header = f'data:{content_type};base64,'
+        res_header = f'data:image/png;base64,'
+
+        if image is None:
+            raise HTTPException(status_code=400, detail="Invalid image file")
+
+        # Ensure grayscale input (convert if colored)
+        if len(image.shape) == 3 and image.shape[2] == 3:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+
+        # Colorize the image
+        output = img_colorization(image[..., ::-1])  # Convert to BGR for model
+        result = output[OutputKeys.OUTPUT_IMG].astype(np.uint8)
+
+        # Convert result to Base64
+        base64_image = image_to_base64(result)
+
+        return ColorizeResponse(
+            success=True,
+            message="ok",
+            colorized_image=f"{res_header}{base64_image}"
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
+
+# @app.get("/models")
+# async def get_available_models():
+#     """Get list of available models"""
+#     return {
+#         "models": config.AVAILABLE_MODELS
+#     }
+#
+# @app.get("/config")
+# async def get_config():
+#     """Get current configuration summary"""
+#     return config.get_config_summary()
 
 if __name__ == "__main__":
     import uvicorn
