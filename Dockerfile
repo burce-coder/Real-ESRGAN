@@ -1,4 +1,4 @@
-FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-devel
+FROM pytorch/pytorch:2.6.0-cuda12.6-cudnn9-runtime
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get -y update && apt-get install -y --no-install-recommends libgl1-mesa-glx && apt-get clean && rm -rf /var/lib/apt/lists/*
 # RUN python -m venv /app/venv
