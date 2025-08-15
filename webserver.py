@@ -1,9 +1,7 @@
-import logging
 import sys
 import types
 import os
 import base64
-from contextlib import asynccontextmanager
 from typing import Optional
 
 import cv2
@@ -123,7 +121,7 @@ def initialize_model(model_name: str = None, **kwargs):
 
     absolute_path = os.path.abspath(os.path.dirname(__file__))
     color_model_path = os.path.join(absolute_path, 'models/iic/cv_ddcolor_image-colorization')
-    logging.log(logging.INFO, f"color models path: {color_model_path}")
+    print(f"color models path: {color_model_path}")
     img_colorization = pipeline(Tasks.image_colorization, model=color_model_path, model_revision=None)
 
 def image_to_base64(image: np.ndarray) -> str:
