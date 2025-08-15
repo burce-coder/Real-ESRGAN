@@ -8,4 +8,4 @@
 # 6. python setup.py develop
 # 7. sudo apt-get update
 # 8. sudo apt-get install -y libgl1-mesa-glx
-# 9. modelscope download --model iic/cv_ddcolor_image-colorization --local_dir ./models
+# 9. modelscope download --model iic/cv_ddcolor_image-colorization --local_dir ./models/iic/cv_ddcolor_image-colorization
