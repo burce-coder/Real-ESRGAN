@@ -6,7 +6,7 @@ from typing import Optional
 
 import cv2
 import numpy as np
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Response
 from pydantic import BaseModel
 from starlette.middleware.cors import CORSMiddleware
 
@@ -231,13 +231,17 @@ async def upscale_image_file(file: UploadFile = File(...)):
                 raise HTTPException(status_code=500, detail=f"Error during upscaling: {str(error)}")
 
         # Convert result to base64
-        upscaled_base64 = image_to_base64(output)
+        # upscaled_base64 = image_to_base64(output)
+        success, encoded_image = cv2.imencode(".png", output)
+        if not success:
+            raise HTTPException(status_code=500, detail="Could not encode image")
 
-        return UpscaleResponse(
-            success=True,
-            message="ok",
-            upscaled_image=f"{res_header}{upscaled_base64}"
-        )
+        # return UpscaleResponse(
+        #     success=True,
+        #     message="ok",
+        #     upscaled_image=f"{res_header}{upscaled_base64}"
+        # )
+        return Response(content=encoded_image.tobytes(), media_type="image/png")
 
     except HTTPException:
         raise
@@ -290,14 +294,17 @@ async def colorize_image(file: UploadFile = File(...)):
         result = output[OutputKeys.OUTPUT_IMG].astype(np.uint8)
 
         # Convert result to Base64
-        base64_image = image_to_base64(result)
+        # base64_image = image_to_base64(result)
+        success, encoded_image = cv2.imencode(".png", result)
+        if not success:
+            raise HTTPException(status_code=500, detail="Could not encode image")
 
-        return ColorizeResponse(
-            success=True,
-            message="ok",
-            colorized_image=f"{res_header}{base64_image}"
-        )
-
+        # return ColorizeResponse(
+        #     success=True,
+        #     message="ok",
+        #     colorized_image=f"{res_header}{base64_image}"
+        # )
+        return Response(content=encoded_image.tobytes(), media_type="image/png")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
 
