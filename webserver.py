@@ -195,7 +195,13 @@ async def health():
     return {"status": "ok"}
 
 
-@app.post("/upscale")
+@app.post("/upscale", responses={200: {
+        "content": {"image/png": {}},
+        "description": "Successfully upscaled image in PNG format"
+        }
+    },
+    response_class=Response
+)
 async def upscale_image_file(file: UploadFile = File(...)):
     """
     Upscale an uploaded image file using Real-ESRGAN
@@ -254,7 +260,13 @@ class ColorizeResponse(BaseModel):
     message: str
     colorized_image: Optional[str] = None
 
-@app.post("/colorize")
+@app.post("/colorize", responses={200: {
+        "content": {"image/png": {}},
+        "description": "Successfully colorize image in PNG format"
+        }
+    },
+    response_class=Response
+)
 async def colorize_image(file: UploadFile = File(...)):
     """
     Endpoint to upload a grayscale image and receive the colorized image as Base64.
