@@ -196,8 +196,8 @@ async def health():
 
 
 @app.post("/upscale", responses={200: {
-        "content": {"image/png": {}},
-        "description": "Successfully upscaled image in PNG format"
+        "content": {"image/jpeg": {}},
+        "description": "Successfully upscaled image in jpg format"
         }
     },
     response_class=Response
@@ -218,8 +218,6 @@ async def upscale_image_file(file: UploadFile = File(...)):
         contents = await file.read()
         nparr = np.frombuffer(contents, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_UNCHANGED)
-        # res_header = f'data:{content_type};base64,'
-        res_header = f'data:image/png;base64,'
 
         if img is None:
             raise HTTPException(status_code=400, detail="Invalid image file")
@@ -238,8 +236,8 @@ async def upscale_image_file(file: UploadFile = File(...)):
 
         # Convert result to base64
         # upscaled_base64 = image_to_base64(output)
-        params = [cv2.IMWRITE_PNG_COMPRESSION, 9]
-        success, encoded_image = cv2.imencode(".png", output, params)
+        params = [cv2.IMWRITE_JPEG_QUALITY, 85]
+        success, encoded_image = cv2.imencode(".jpg", output, params)
         if not success:
             raise HTTPException(status_code=500, detail="Could not encode image")
 
@@ -248,7 +246,7 @@ async def upscale_image_file(file: UploadFile = File(...)):
         #     message="ok",
         #     upscaled_image=f"{res_header}{upscaled_base64}"
         # )
-        return Response(content=encoded_image.tobytes(), media_type="image/png")
+        return Response(content=encoded_image.tobytes(), media_type="image/jpeg")
 
     except HTTPException:
         raise
@@ -262,8 +260,8 @@ class ColorizeResponse(BaseModel):
     colorized_image: Optional[str] = None
 
 @app.post("/colorize", responses={200: {
-        "content": {"image/png": {}},
-        "description": "Successfully colorize image in PNG format"
+        "content": {"image/jpeg": {}},
+        "description": "Successfully colorize image in jpg format"
         }
     },
     response_class=Response
@@ -291,8 +289,6 @@ async def colorize_image(file: UploadFile = File(...)):
         contents = await file.read()
         nparr = np.frombuffer(contents, np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-        # res_header = f'data:{content_type};base64,'
-        res_header = f'data:image/png;base64,'
 
         if image is None:
             raise HTTPException(status_code=400, detail="Invalid image file")
@@ -308,8 +304,8 @@ async def colorize_image(file: UploadFile = File(...)):
 
         # Convert result to Base64
         # base64_image = image_to_base64(result)
-        params = [cv2.IMWRITE_PNG_COMPRESSION, 9]
-        success, encoded_image = cv2.imencode(".png", result, params)
+        params = [cv2.IMWRITE_JPEG_QUALITY, 85]
+        success, encoded_image = cv2.imencode(".jpg", result, params)
         if not success:
             raise HTTPException(status_code=500, detail="Could not encode image")
 
@@ -318,7 +314,7 @@ async def colorize_image(file: UploadFile = File(...)):
         #     message="ok",
         #     colorized_image=f"{res_header}{base64_image}"
         # )
-        return Response(content=encoded_image.tobytes(), media_type="image/png")
+        return Response(content=encoded_image.tobytes(), media_type="image/jpeg")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error processing image: {str(e)}")
 
