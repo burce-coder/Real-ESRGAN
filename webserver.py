@@ -238,7 +238,8 @@ async def upscale_image_file(file: UploadFile = File(...)):
 
         # Convert result to base64
         # upscaled_base64 = image_to_base64(output)
-        success, encoded_image = cv2.imencode(".png", output)
+        params = [cv2.IMWRITE_PNG_COMPRESSION, 9]
+        success, encoded_image = cv2.imencode(".png", output, params)
         if not success:
             raise HTTPException(status_code=500, detail="Could not encode image")
 
@@ -307,7 +308,8 @@ async def colorize_image(file: UploadFile = File(...)):
 
         # Convert result to Base64
         # base64_image = image_to_base64(result)
-        success, encoded_image = cv2.imencode(".png", result)
+        params = [cv2.IMWRITE_PNG_COMPRESSION, 9]
+        success, encoded_image = cv2.imencode(".png", result, params)
         if not success:
             raise HTTPException(status_code=500, detail="Could not encode image")
 
